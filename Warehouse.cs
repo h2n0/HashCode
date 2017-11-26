@@ -9,18 +9,12 @@ namespace hashCode
 {
     struct Warehouse
     {
-        Pos Location { get; }
-		int[] Stock;
+        public Pos Location { get; }
+		List<Product> Stock;
 
-		public Warehouse(Pos location, int numberOfItems) {
+		public Warehouse(List<Product> numberOfItems, Pos location) {
             Location = location;
-			Stock = new int[numberOfItems];
+            Stock = new List<Product>();
         }
-
-		public void addStock(int[] stock){
-			for (int i = 0; i < stock.Length; i++) {
-				this.Stock[i] += stock[i];
-			}
-		}
     }
 }

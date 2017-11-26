@@ -8,12 +8,17 @@ namespace hashCode
 {
     struct Order
     {
-        Pos Location { get; set; }
-        int[] ItemsToDeliver { get; }
-        public Order(Pos location, int[] itemsToDeliver)
+        public Pos Location { get; set; }
+        public List<Product> ItemsToDeliver { set; get; }
+        public bool Completed { get; set; }
+        public Order(Pos location, List<Product> itemsToDeliver)
         {
             Location = location;
-            ItemsToDeliver = itemsToDeliver;
+            ItemsToDeliver = new List<Product>();
+            for (int i = 0; i < itemsToDeliver.Count; i++) {
+                ItemsToDeliver.Add(itemsToDeliver[i]);
+            }
+            Completed = false;
         }
     }
 }
