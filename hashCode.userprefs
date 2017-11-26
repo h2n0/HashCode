@@ -1,1 +1,13 @@
-﻿<Properties StartupItem="hashCode.csproj" />
+﻿<Properties StartupItem="hashCode.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Warehouse.cs">
+    <Files>
+      <File FileName="Program.cs" Line="8" Column="7" />
+      <File FileName="Warehouse.cs" Line="13" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
