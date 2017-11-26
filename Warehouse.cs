@@ -8,5 +8,9 @@ namespace hashCode
 {
     class Warehouse
     {
+        Pos Location { get; }
+        Warehouse(Pos location) {
+            Location = location;
+        }
     }
 }
