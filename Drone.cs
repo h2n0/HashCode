@@ -13,5 +13,9 @@ namespace hashCode
         Drone(){
             Location = new Pos(0, 0);
         }
+        public int TimeToPosition(Pos target)
+        {
+            return (int) Math.Ceiling(Math.Sqrt(Math.Pow(Location.X - target.X, 2) + Math.Pow(Location.Y - target.Y, 2)));
+        }
     }
 }
