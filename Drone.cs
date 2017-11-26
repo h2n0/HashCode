@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace hashCode
 {
-    class Warehouse
+    class Drone
     {
-        Pos Location { get; }
-        Warehouse(Pos location) {
-            Location = location;
+        Pos Location { get; set; }
+        Drone(){
+            Location = new Pos(0, 0);
         }
     }
 }
