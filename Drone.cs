@@ -38,78 +38,81 @@ namespace hashCode
                 return false;
             }
             else {
-                int pointer = HeldItems.Count / 2;
+                int pointer;
+                bool found;
                 for (int i = 0; i < itemsToLoad.Count; i++) {
+                    pointer = HeldItems.Count / 2;
+                    found = false;
                     for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++) {
                         if (itemsToLoad[i].ProductNumb > HeldItems[t].ProductNumb)
                         {
-                            pointer += HeldItems.Count / (int)Math.Pow(2, t);
+                            pointer += HeldItems.Count / (int) Math.Pow(2, t);
                         }
                         else if (itemsToLoad[i].ProductNumb < HeldItems[t].ProductNumb)
                         {
-                            pointer -= HeldItems.Count / (int)Math.Pow(2, t);
+                            pointer -= HeldItems.Count / (int) Math.Pow(2, t);
                         }
                         else {
                             HeldItems[pointer].ProductQuantity += itemsToLoad[i].ProductQuantity;
+                            found = true;
+                            break;
                         }
+                    }
+                    if (found == false) {
+                        HeldItems.Insert(pointer, itemsToLoad[i]);
                     }
                 }
                 return true;
             }
         }
 
-        public bool Deliver(Pos destination, ref Order orderToDeliver) {
-
-            int pointer;
-            for (int i = 0; i < orderToDeliver.ItemsToDeliver.Count; i++)
+        public bool Deliver(Pos destination, int productNumb, int productQuantity, ref Order orderToDeliver) {
+            
+            int pointer = HeldItems.Count / 2;
+            for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++)
             {
-                pointer = HeldItems.Count / 2;
-                for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++)
+                if (productNumb > HeldItems[pointer].ProductNumb)
                 {
-                    if (orderToDeliver.ItemsToDeliver[i].ProductNumb > HeldItems[t].ProductNumb)
-                    {
-                        pointer += HeldItems.Count / (int)Math.Pow(2, t);
-                    }
-                    else if (orderToDeliver.ItemsToDeliver[i].ProductNumb < HeldItems[t].ProductNumb)
-                    {
-                        pointer -= HeldItems.Count / (int)Math.Pow(2, t);
-                    }
-                    else if (HeldItems[i].ProductQuantity < orderToDeliver.ItemsToDeliver[i].ProductQuantity)
-                    {
-                        Console.WriteLine("Not enough of item '" + i + "' to deliver");
-                        return false;
-                    }
+                    pointer += HeldItems.Count / (int)Math.Pow(2, t);
+                }
+                else if (productNumb < HeldItems[pointer].ProductNumb)
+                {
+                    pointer -= HeldItems.Count / (int)Math.Pow(2, t);
+                }
+                else if (productQuantity < HeldItems[pointer].ProductQuantity)
+                {
+                    Console.WriteLine("Not enough of item '" + productNumb + "' to deliver");
+                    return false;
                 }
             }
 
             if (destination.X == Location.X && destination.Y == Location.Y)
             {
-                int itemsLeftToDeliver = 0;
-                for (int i = 0; i < orderToDeliver.ItemsToDeliver.Count; i++)
+                for (int i = 0; HeldItems.Count / Math.Pow(2, i) > 1; i++)
                 {
                     pointer = HeldItems.Count / 2;
-                    for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++)
+                    if (productNumb > HeldItems[pointer].ProductNumb)
                     {
-                        if (orderToDeliver.ItemsToDeliver[i].ProductNumb > HeldItems[t].ProductNumb)
+                        pointer += HeldItems.Count / (int)Math.Pow(2, i);
+                    }
+                    else if (productNumb < HeldItems[pointer].ProductNumb)
+                    {
+                        pointer -= HeldItems.Count / (int)Math.Pow(2, i);
+                    }
+                    else
+                    {
+                        if (HeldItems[i].ProductQuantity >= orderToDeliver.ItemsToDeliver[i].ProductQuantity)
                         {
-                            pointer += HeldItems.Count / (int)Math.Pow(2, t);
+                            orderToDeliver.ItemsToDeliver[i].ProductQuantity = 0;
+                            HeldItems[i].ProductQuantity -= orderToDeliver.ItemsToDeliver[i].ProductQuantity;
+                            orderToDeliver.Completed = true;
                         }
-                        else if (orderToDeliver.ItemsToDeliver[i].ProductNumb < HeldItems[t].ProductNumb)
-                        {
-                            pointer -= HeldItems.Count / (int)Math.Pow(2, t);
-                        }
-                        else if (HeldItems[i].ProductQuantity < orderToDeliver.ItemsToDeliver[i].ProductQuantity)
-                        {
+                        else {
                             orderToDeliver.ItemsToDeliver[i].ProductQuantity -= HeldItems[i].ProductQuantity;
-                            itemsLeftToDeliver += orderToDeliver.ItemsToDeliver[i].ProductQuantity;
-                            if (itemsLeftToDeliver == 0)
-                            {
-                                orderToDeliver.Completed = true;
-                            }
+                            HeldItems[i].ProductQuantity = 0;
                         }
                     }
                 }
-                
             }
             else {
                 TurnsTillTarget = TimeToPosition(orderToDeliver.Location);
