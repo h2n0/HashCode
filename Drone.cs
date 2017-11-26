@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace hashCode
 {
-    class Drone
+    struct Drone
     {
         Pos Location { get; set; }
         int MaxWeight { get; }
         int HeldItems { get; set; }
         int CurrentWeight { get; set; }
 
-        Drone(int maxWeight){
+        public Drone(int maxWeight){
             Location = new Pos(0, 0);
             MaxWeight = maxWeight;
         }

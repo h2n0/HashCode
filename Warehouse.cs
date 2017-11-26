@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace hashCode
 {
-    class Warehouse
+    struct Warehouse
     {
         Pos Location { get; }
 		int[] Stock;
 
-		Warehouse(Pos location, int numberOfItems) {
+		public Warehouse(Pos location, int numberOfItems) {
             Location = location;
 			Stock = new int[numberOfItems];
         }
