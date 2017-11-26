@@ -10,8 +10,17 @@ namespace hashCode
     class Warehouse
     {
         Pos Location { get; }
-        Warehouse(Pos location) {
+		int[] Stock;
+
+		Warehouse(Pos location, int numberOfItems) {
             Location = location;
+			Stock = new int[numberOfItems];
         }
+
+		public void addStock(int[] stock){
+			for (int i = 0; i < stock.Length; i++) {
+				this.Stock[i] += stock[i];
+			}
+		}
     }
 }
