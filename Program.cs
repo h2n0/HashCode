@@ -25,8 +25,6 @@ namespace hashCode
 				lines.Add (line);
 			}
 
-			String[] lineArray = lines.ToArray();
-
 			int mapWidth = 0,
 			mapHeight = 0,
 			numDrones = 0,
@@ -34,9 +32,12 @@ namespace hashCode
 			maxPayload = 0;
 
 			int[] itemWeights = null;
+			Warehouse[] warehouses = null;
 
-			for (int i = 0; i < lineArray.Length; i++) {
-				String current = lineArray [i];
+			int wareHousesLeft = 0;
+
+			for (int i = 0; i < lines.Count; i++) {
+				String current = lines [i];
 				if (i == 0) { // World data
 					String[] parts = current.Split (new []{ " " }, StringSplitOptions.RemoveEmptyEntries);
 					mapWidth = int.Parse (parts [0]);
@@ -51,8 +52,18 @@ namespace hashCode
 					for (int j = 0; j < itemWeights.Length; j++) {
 						itemWeights [j] = int.Parse (parts [j]);
 					}
+				} else if (i == 3) { // How many warehouses
+					warehouses = new Warehouse[int.Parse (current)];
+					wareHousesLeft = warehouses.Length;
+				} else if (i == 4 || wareHousesLeft > 0) { // Fill warehouses
+					
+				} else { // Job listsings
+
 				}
 			}
+
+			Console.WriteLine ("Warehouse 0:");
+			Console.WriteLine ("Stock: {0}", warehouses[0].stock[0]);
 		}
 	}
 }
