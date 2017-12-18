@@ -38,28 +38,34 @@ namespace hashCode
                 return false;
             }
             else {
-                int pointer;
                 bool found;
                 for (int i = 0; i < itemsToLoad.Count; i++) {
-                    pointer = HeldItems.Count / 2;
                     found = false;
-                    for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++) {
-                        if (itemsToLoad[i].ProductNumb > HeldItems[t].ProductNumb)
+                    int left = 0,
+                        right = HeldItems.Count - 1,
+                        mid = 0;
+                    while (left <= right)
+                    {
+                        mid = left + ((right - left) / 2);
+                        if (HeldItems[mid].ProductNumb > itemsToLoad[i].ProductNumb)
                         {
-                            pointer += HeldItems.Count / (int) Math.Pow(2, t);
+                            right = mid - 1;
                         }
-                        else if (itemsToLoad[i].ProductNumb < HeldItems[t].ProductNumb)
+                        else if (HeldItems[mid].ProductNumb < itemsToLoad[i].ProductNumb)
                         {
-                            pointer -= HeldItems.Count / (int) Math.Pow(2, t);
+                            left = mid + 1;
                         }
-                        else {
-                            HeldItems[pointer].ProductQuantity += itemsToLoad[i].ProductQuantity;
+                        else
+                        {
+                            HeldItems[mid].ProductQuantity += itemsToLoad[i].ProductQuantity;
                             found = true;
                             break;
                         }
                     }
-                    if (found == false) {
-                        HeldItems.Insert(pointer, itemsToLoad[i]);
+                    //-------------------------------------------------------------------
+                    if (found == false)
+                    {
+                        HeldItems.Insert(mid, itemsToLoad[i]);
                     }
                 }
                 return true;
@@ -67,56 +73,56 @@ namespace hashCode
         }
 
         public bool Deliver(Pos destination, int productNumb, int productQuantity, ref Order orderToDeliver) {
-            
-            int pointer = HeldItems.Count / 2;
-            for (int t = 0; HeldItems.Count / Math.Pow(2, t) > 1; t++)
-            {
-                if (productNumb > HeldItems[pointer].ProductNumb)
-                {
-                    pointer += HeldItems.Count / (int)Math.Pow(2, t);
-                }
-                else if (productNumb < HeldItems[pointer].ProductNumb)
-                {
-                    pointer -= HeldItems.Count / (int)Math.Pow(2, t);
-                }
-                else if (productQuantity < HeldItems[pointer].ProductQuantity)
-                {
-                    Console.WriteLine("Not enough of item '" + productNumb + "' to deliver");
-                    return false;
-                }
-            }
 
-            if (destination.X == Location.X && destination.Y == Location.Y)
+            //----------------------------finding index on drone----------------------------
+            int left = 0,
+                right = HeldItems.Count - 1,
+                mid = 0;
+            while (left <= right)
             {
-                for (int i = 0; HeldItems.Count / Math.Pow(2, i) > 1; i++)
+                mid = left + ((right - left) / 2);
+                if (HeldItems[mid].ProductNumb > productNumb)
                 {
-                    pointer = HeldItems.Count / 2;
-                    if (productNumb > HeldItems[pointer].ProductNumb)
+                    right = mid - 1;
+                }
+                else if (HeldItems[mid].ProductNumb < productNumb)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    if (HeldItems[mid].ProductQuantity < productQuantity)
                     {
-                        pointer += HeldItems.Count / (int)Math.Pow(2, i);
-                    }
-                    else if (productNumb < HeldItems[pointer].ProductNumb)
-                    {
-                        pointer -= HeldItems.Count / (int)Math.Pow(2, i);
-                    }
-                    else
-                    {
-                        if (HeldItems[i].ProductQuantity >= orderToDeliver.ItemsToDeliver[i].ProductQuantity)
-                        {
-                            orderToDeliver.ItemsToDeliver[i].ProductQuantity = 0;
-                            HeldItems[i].ProductQuantity -= orderToDeliver.ItemsToDeliver[i].ProductQuantity;
-                            orderToDeliver.Completed = true;
-                        }
-                        else {
-                            orderToDeliver.ItemsToDeliver[i].ProductQuantity -= HeldItems[i].ProductQuantity;
-                            HeldItems[i].ProductQuantity = 0;
-                        }
+                        Console.WriteLine("Not enough of item '" + productNumb + "' to deliver");
+                        return false;
                     }
                 }
+                
             }
-            else {
-                TurnsTillTarget = TimeToPosition(orderToDeliver.Location);
+            //----------------------------finding index in order----------------------------
+            left = 0;
+            right = orderToDeliver.ItemsToDeliver.Count - 1;
+            int midSecond = 0;
+            while (left <= right)
+            {
+                midSecond = left + ((right - left) / 2);
+                if (orderToDeliver.ItemsToDeliver[midSecond].ProductNumb > productNumb)
+                {
+                    right = midSecond - 1;
+                }
+                else if (orderToDeliver.ItemsToDeliver[mid].ProductNumb < productNumb)
+                {
+                    left = midSecond + 1;
+                }
+                else
+                {
+                    orderToDeliver.ItemsToDeliver[midSecond].ProductQuantity = 0;
+                    HeldItems[mid].ProductQuantity -= orderToDeliver.ItemsToDeliver[midSecond].ProductQuantity;
+                    orderToDeliver.Completed = true;
+                    return true;
+                }
             }
+            TurnsTillTarget = TimeToPosition(orderToDeliver.Location);
             return true;
         }
         
